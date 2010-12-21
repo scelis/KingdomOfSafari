@@ -25,7 +25,7 @@ Features
     
     `CTRL-D` — Hitting Control-D when the chat field is active will cause the chat field to lose focus and instead grant focus to the main content pane, allowing the player to immediately continue adventuring.
 
-* Fixes a KoL focus bug, which prevented players from using the keyboard to progress through an adventure without clicking on the content frame after each and every page load.
+* Fixes a KoL focus bug in Safari, which prevented players from using the keyboard to progress through an adventure without clicking on the content frame after each and every page load.
 
 
 Thanks
