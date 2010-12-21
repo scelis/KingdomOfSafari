@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Global Page</title>
+<script type="text/javascript">
+(function() {
+
+var databaseSize = 51200;
+
+var getSetting = function(e) {
+    var key = e.message.key;
+    var value = safari.extension.settings[key];
+    var data = { "value" : value, "requestId" : e.message.requestId };
+    e.target.page.dispatchMessage("retrievedSetting", data);
+};
+
+var initGreasemonkeyScript = function(e) {
+    var scriptName = e.message.scriptName;
+    var db = openDatabase(scriptName, "1.0", "Database for Greasemonkey script " + scriptName, databaseSize);
+    if (!db) {
+        alert("Failed to open the database for Greasemonkey script " + scriptName);
+        return;
+    }
+    else {
+        var data = {};
+        var respData = { "requestId" : e.message.requestId, "scriptStorage" : data };
+        db.transaction(function(tx) {
+            tx.executeSql("SELECT * FROM ScriptVariables", [],
+                function(tx, result) {
+                    var rows = result.rows;
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows.item(i);
+                        data[row['key']] = row['value'];
+                    }
+                    e.target.page.dispatchMessage("greasemonkeyScriptInitialized", respData);
+                },
+                function(tx, error) {
+                    tx.executeSql("CREATE TABLE ScriptVariables (key TEXT, value TEXT)", [],
+                        function(tx, result) {
+                            e.target.page.dispatchMessage("greasemonkeyScriptInitialized", respData);
+                        },
+                        function(tx, error) {
+                            alert("Failed to create ScriptVariables for GreasemonkeyScript " + scriptName);
+                        }
+                    );
+                }
+             );
+        });
+    }
+};
+
+var setGreasemonkeyValue = function(e) {
+    var scriptName = e.message.scriptName;
+    var key = e.message.key;
+    var value = e.message.value;
+    
+    var db = openDatabase(scriptName, "1.0", "Database for Greasemonkey script " + scriptName, databaseSize);
+    if (db) {
+        db.transaction(function(tx) {
+            tx.executeSql("SELECT * from ScriptVariables WHERE key=?", [key],
+                function(tx, result) {
+                    if (result.rows.length == 0) {
+                        tx.executeSql("INSERT INTO ScriptVariables VALUES (?, ?)", [key, value],
+                            function(tx, result) {
+                            },
+                            function(tx, error) {
+                                alert("Could not store value for Greasemonkey script " + scriptName);
+                            }
+                        );
+                    }
+                    else {
+                        tx.executeSql("UPDATE ScriptVariables SET value=? WHERE key=?", [value, key],
+                            function(tx, result) {
+                            },
+                            function(tx, error) {
+                                alert("Could not store value for Greasemonkey script " + scriptName);
+                            }
+                        );
+                    }
+                },
+                function(tx, error) {
+                    alert("Could not store value for Greasemonkey script " + scriptName);
+                }
+            );
+        });
+    }
+};
+
+var deleteGreasemonkeyValue = function(e) {
+    var scriptName = e.message.scriptName;
+    var key = e.message.key;
+    
+    var db = openDatabase(scriptName, "1.0", "Database for Greasemonkey script " + scriptName, databaseSize);
+    if (db) {
+        db.transaction(function(tx) {
+            tx.executeSql("DELETE FROM ScriptVariables WHERE key=?", [key],
+                function(tx, result) {
+                },
+                function(tx, error) {
+                    alert(error);
+                }
+            );
+        });
+    }
+};
+
+var performHttpRequest = function(e) {
+    var method = e.message.method;
+    var url = e.message.url;
+    var onload = e.message.onload;
+
+    // Create the XMLHttpRequest object.
+    var request = new XMLHttpRequest();
+    request.open(method, url, true);
+
+    // Set any headers.
+    if (e.message.headers) {
+        for (key in e.message.headers) {
+            request.setRequestHeader(key, e.message.headers[key]);
+        }
+    }
+
+    // Override MIME type.
+    if (e.message.overrideMimeType) {
+        request.overrideMimeType(e.message.overrideMimeType);
+    }
+
+    // Prepare the response callback.
+    var callback = function() {
+        var responseDetails = {};
+        responseDetails.status = request.status;
+        responseDetails.statusText = request.statusText;
+        responseDetails.readyState = request.readyState;
+        responseDetails.responseText = request.responseText;
+        responseDetails.responseHeaders = request.getAllResponseHeaders();
+        responseDetails.finalUrl = url;  // This is WRONG, but the best we can do.
+        responseDetails.requestId = e.message.requestId;
+        e.target.page.dispatchMessage("httpRequestOnReadyStateChange", responseDetails);
+    }
+    request.onreadystatechange = callback;
+
+    // Execute the request.
+    if (e.message.data) {
+        request.send(e.message.data);
+    }
+    else {
+        request.send();
+    }
+}
+
+var handleMessage = function(e) {
+    if (e.name === "getSetting") {
+        getSetting(e);
+    }
+    else if (e.name === "initGreasemonkeyScript") {
+        initGreasemonkeyScript(e);
+    }
+    else if (e.name === "setGreasemonkeyValue") {
+        setGreasemonkeyValue(e);
+    }
+    else if (e.name === "deleteGreasemonkeyValue") {
+        deleteGreasemonkeyValue(e);
+    }
+    else if (e.name === "performHttpRequest") {
+        performHttpRequest(e);
+    }
+};
+safari.application.addEventListener("message", handleMessage, false);
+
+})();
+</script>
+</head>
+<body>
+</body>
+</html>
