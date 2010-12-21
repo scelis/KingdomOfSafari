@@ -19,11 +19,11 @@ Features
 
 * Adds additional keyboard shortcuts to chat:
 
-    `.` — Typing a period (`.`) will grant focus to the chat field.
+    `.` — Typing a period will grant focus to the chat field.
     
-    `/` — Typing a slash (`/`) will grant focus to the chat field and enter a slash into the field. This enables the player to just start typing chat commands even if the chat field does not currently have focus.
+    `/` — Typing a forward slash will grant focus to the chat field and enter a slash into the field. This enables the player to just start typing chat commands even if the chat field does not currently have focus.
     
-    `CTRL-D` — Hitting `Control-D` when the chat field is active will cause the chat field to lose focus and instead grant focus to the main content pane, allowing the player to immediately continue adventuring.
+    `CTRL-D` — Hitting Control-D when the chat field is active will cause the chat field to lose focus and instead grant focus to the main content pane, allowing the player to immediately continue adventuring.
 
 * Fixes a KoL focus bug, which prevented players from using the keyboard to progress through an adventure without clicking on the content frame after each and every page load.
 
