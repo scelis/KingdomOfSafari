@@ -10,11 +10,11 @@
 			<key>Developer Identifier</key>
 			<string>4DS2QCZC54</string>
 			<key>CFBundleVersion</key>
-			<string>1</string>
+			<string>2</string>
 			<key>CFBundleShortVersionString</key>
-			<string>1.0</string>
+			<string>1.0.1</string>
 			<key>URL</key>
-			<string>http://github.com/downloads/scelis/KingdomOfSafari/KingdomOfSafari-1_0.safariextz</string>
+			<string>http://github.com/downloads/scelis/KingdomOfSafari/KingdomOfSafari-1_0_1.safariextz</string>
 		</dict>
 	</array>
 </dict>
