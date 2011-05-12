@@ -36,6 +36,14 @@ Special thanks go out to:
 
 * Chez — For his amazing [ActiveChat][ac] script. This was the script that made me wish that Safari had better support for Greasemonkey scripts.
 
+
+Version History
+---------------
+* 1.0.1
+    * Fixed a bug with keyboard shortcuts where '/' could cause two slashes to appear in the chat field and '.' could cause a period to be placed at the end of the chat field.
+* 1.0
+    * Initial release.
+
 [ac]:http://hardcoreoxygenation.com/forums/viewtopic.php?t=6019 "ActiveChat"
 [cdmtc]:http://forums.kingdomofloathing.com/vb/showthread.php?t=125974 "CDM's Tabbed KoL Chat"
 [downloads]:http://github.com/scelis/KingdomOfSafari/downloads "Kingdom of Safari Downloads"
