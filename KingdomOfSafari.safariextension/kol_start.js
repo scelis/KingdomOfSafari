@@ -19,17 +19,26 @@ var handleKeyboardEvent = function(e) {
         inputIsActive = true;
     }
     
+    var handledEvent = false;
     if (e.keyCode === 191 && !inputIsActive) {        // '/'
         top.chatpane.focus();
         top.chatpane.chatform.graf.focus();
         top.chatpane.chatform.graf.value = "/";
+        handledEvent = true;
     }
     else if (e.keyCode === 190 && !inputIsActive) {   // '.'
         top.chatpane.focus();
         top.chatpane.chatform.graf.focus();
+        handledEvent = true;
     }
-    else if (e.keyCode === 68 && e.ctrlKey) {         // 'd'
+    else if (e.keyCode === 68 && e.ctrlKey) {         // '^d'
         top.mainpane.focus();
+        handledEvent = true;
+    }
+    
+    if (handledEvent) {
+        e.preventDefault();
+        e.stopPropagation();
     }
 };
 
